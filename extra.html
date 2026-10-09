@@ -1,0 +1,519 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Secret 💗</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  color: white;
+  background: radial-gradient(circle at top, #32103e, #10091c 55%, #05030b);
+}
+
+#stars, #hearts {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#stars { z-index: 0; }
+#hearts { z-index: 2; }
+
+.star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle {
+  from { opacity: .15; transform: scale(.7); }
+  to { opacity: 1; transform: scale(1.7); }
+}
+
+.heart {
+  position: absolute;
+  bottom: -40px;
+  color: #ff65b4;
+  text-shadow: 0 0 15px #ff3ca6;
+  animation: rise linear forwards;
+}
+
+@keyframes rise {
+  to {
+    transform: translateY(-115vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 12.5%;
+  height: 4px;
+  background: linear-gradient(90deg, #ff3caa, #a56bff);
+  box-shadow: 0 0 15px #ff3caa;
+  transition: width .5s;
+  z-index: 10;
+}
+
+.counter {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  color: #ffc3e5;
+  font-size: 12px;
+  letter-spacing: 2px;
+  z-index: 5;
+}
+
+.scene {
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 55px 16px;
+  z-index: 1;
+}
+
+.scene.active {
+  display: flex;
+  animation: enter .65s ease both;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(35px) scale(.96);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.card {
+  width: min(540px, 100%);
+  padding: 38px 24px;
+  text-align: center;
+  border-radius: 26px;
+  border: 1px solid #ff6db544;
+  background: rgba(20, 11, 34, .88);
+  box-shadow: 0 0 55px #f3459c15,
+              inset 0 0 35px #a64dff09;
+  backdrop-filter: blur(12px);
+}
+
+.emoji {
+  font-size: 55px;
+  margin-bottom: 18px;
+  display: inline-block;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-12px) rotate(4deg); }
+}
+
+.label {
+  font-size: 11px;
+  color: #ff87c6;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+h1 {
+  font-size: clamp(29px, 7vw, 45px);
+  line-height: 1.3;
+}
+
+.script {
+  display: block;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: clamp(32px, 7vw, 47px);
+  color: #ff83c4;
+  margin-top: 8px;
+  text-shadow: 0 0 20px #ff3b9d55;
+}
+
+p {
+  color: #d1c2df;
+  font-size: 14px;
+  line-height: 1.9;
+  margin-top: 18px;
+}
+
+.line {
+  width: 70px;
+  height: 2px;
+  margin: 25px auto;
+  background: linear-gradient(90deg, transparent, #ff6ab8, transparent);
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-top: 28px;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 14px 23px;
+  border: 1px solid #ff80c7;
+  border-radius: 40px;
+  background: linear-gradient(120deg, #ff399d, #9e55ff);
+  box-shadow: 0 0 22px #ff3caa30;
+  transition: transform .25s, box-shadow .25s;
+}
+
+button:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 0 30px #ff3caa77;
+}
+
+button:active {
+  transform: scale(.96);
+}
+
+.ring {
+  width: 105px;
+  height: 105px;
+  border: 2px solid #ff6fbc;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin: 25px auto;
+  font-size: 42px;
+  box-shadow: 0 0 30px #ff4fa355;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  50% { transform: scale(1.09); }
+}
+
+.answer {
+  width: min(200px, 100%);
+  min-height: 62px;
+  border-radius: 17px;
+  font-size: 15px;
+}
+
+#result {
+  display: none;
+  animation: enter .7s ease both;
+}
+
+#result h2 {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 35px;
+  color: #ff8bc8;
+  margin-top: 20px;
+}
+
+button.restart {
+  background: transparent;
+  border-color: #a57dc7;
+  margin-top: 20px;
+}
+
+footer {
+  position: fixed;
+  bottom: 12px;
+  width: 100%;
+  text-align: center;
+  color: #907ca7;
+  font-size: 9px;
+  letter-spacing: 2px;
+  z-index: 3;
+}
+
+@media(max-height: 680px) {
+  .card { padding: 22px 18px; }
+  .emoji { font-size: 38px; margin-bottom: 10px; }
+  p { margin-top: 10px; line-height: 1.65; }
+  .line { margin: 15px auto; }
+  .buttons { margin-top: 18px; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="stars"></div>
+<div id="hearts"></div>
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">01 / 08</div>
+
+<!-- SLIDE 1 -->
+<section class="scene active">
+  <div class="card">
+    <div class="emoji">🌙</div>
+    <div class="label">A little surprise</div>
+    <h1>Hey, you!<span class="script">Yes, you...</span></h1>
+    <p>I made something a little different for you.<br>
+    So, can you give me a minute?</p>
+    <div class="line"></div>
+    <div class="buttons">
+      <button onclick="nextSlide()">Okay, I'm curious ✨ →</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 2 -->
+<section class="scene">
+  <div class="card">
+    <div class="emoji">💭</div>
+    <div class="label">Chapter one</div>
+    <h1>There is something<span class="script">on my mind...</span></h1>
+    <p>I've been thinking about how to say it.<br>
+    I just hope you don't find it weird. 🙈</p>
+    <div class="buttons">
+      <button onclick="nextSlide()">Now I'm curious 👀 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3 -->
+<section class="scene">
+  <div class="card">
+    <div class="emoji">🦋</div>
+    <div class="label">A small hint</div>
+    <h1>It's about<span class="script">someone special...</span></h1>
+    <p>Someone whose messages can make an ordinary day feel a little better.</p>
+    <p>Someone whose smile is hard not to notice.</p>
+    <div class="buttons">
+      <button onclick="nextSlide()">Who could it be? 🤔 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4 -->
+<section class="scene">
+  <div class="card">
+    <div class="emoji">🌷</div>
+    <div class="label">Getting closer</div>
+    <h1>Well...<span class="script">it's you.</span></h1>
+    <p>Yes, you! 😅</p>
+    <p>I like talking to you. You have a vibe that makes me smile, and I wanted you to know that.</p>
+    <div class="buttons">
+      <button onclick="nextSlide()">Wait... what? 💗 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5 -->
+<section class="scene">
+  <div class="card">
+    <div class="emoji">💓</div>
+    <div class="label">No more hints</div>
+    <h1>Okay, here it is...</h1>
+    <div class="line"></div>
+    <span class="script">I like you.</span>
+    <p>That's all I wanted to say.<br>
+    No big speech, just an honest feeling. 😊</p>
+    <div class="buttons">
+      <button onclick="nextSlide()">There's one more thing... →</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6 -->
+<section class="scene">
+  <div class="card">
+    <div class="emoji">🌌</div>
+    <div class="label">A little suspense</div>
+    <h1>Now I'm wondering...</h1>
+    <p>I've told you how I feel.<br>
+    But now comes the question I've been a little nervous to ask.</p>
+    <div class="ring">💗</div>
+    <div class="buttons">
+      <button onclick="nextSlide()">Ask me already! 😅 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 7 -->
+<section class="scene">
+  <div class="card">
+    <div class="emoji">🥹</div>
+    <div class="label">Almost there</div>
+    <h1>Be honest with me...</h1>
+    <span class="script">Do you feel the same?</span>
+    <p>Whatever your answer is, I'd like it to be your real answer. 💜</p>
+    <div class="line"></div>
+    <div class="buttons">
+      <button onclick="nextSlide()">Let's do this 💌 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8 -->
+<section class="scene">
+  <div class="card">
+    <div class="emoji">💖</div>
+    <div class="label">The final question</div>
+    <h1>Do you<span class="script">like me?</span></h1>
+    <p>It's your turn now. Choose your answer! 🌸</p>
+
+    <div class="buttons" id="answerButtons">
+      <button class="answer" onclick="chooseAnswer('yes')">
+        💗 Yes
+      </button>
+      <button class="answer" onclick="chooseAnswer('absolutely')">
+        💜 Absolutely Yes
+      </button>
+    </div>
+
+    <div id="result">
+      <div class="line"></div>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+      <div class="emoji" style="margin-top:18px">🌸✨💗</div>
+      <button class="restart" onclick="restartStory()">
+        ↻ Watch Again
+      </button>
+    </div>
+  </div>
+</section>
+
+<footer>A LITTLE COURAGE • A LITTLE HONESTY</footer>
+
+<script>
+"use strict";
+
+let current = 0;
+
+const scenes = Array.from(document.querySelectorAll(".scene"));
+const counter = document.getElementById("counter");
+const progress = document.getElementById("progress");
+
+// Go to the next slide
+function nextSlide() {
+  if (current >= scenes.length - 1) return;
+
+  scenes[current].classList.remove("active");
+  current++;
+
+  scenes[current].classList.remove("active");
+
+  // Restart the animation on the new slide
+  void scenes[current].offsetWidth;
+
+  scenes[current].classList.add("active");
+
+  counter.textContent =
+    String(current + 1).padStart(2, "0") + " / " + scenes.length;
+
+  progress.style.width =
+    ((current + 1) / scenes.length * 100) + "%";
+
+  makeHearts(5);
+}
+
+// Process the final answer
+function chooseAnswer(answer) {
+  const result = document.getElementById("result");
+  const title = document.getElementById("resultTitle");
+  const message = document.getElementById("resultText");
+
+  if (answer === "yes") {
+    title.textContent = "That made me smile! 💗";
+    message.textContent =
+      "Thank you for being honest with me. I'm really happy you shared your feelings. Let's take things one step at a time. 😊";
+  } else {
+    title.textContent = "Aww, absolutely yes! 💖";
+    message.textContent =
+      "You just made my day extra special! I'm glad I found the courage to tell you how I feel. ✨";
+  }
+
+  document.getElementById("answerButtons").style.display = "none";
+  result.style.display = "block";
+
+  for (let i = 0; i < 20; i++) {
+    setTimeout(() => makeHearts(2), i * 100);
+  }
+}
+
+// Restart the whole story
+function restartStory() {
+  document.getElementById("result").style.display = "none";
+  document.getElementById("answerButtons").style.display = "flex";
+
+  scenes[current].classList.remove("active");
+  current = 0;
+  scenes[0].classList.add("active");
+
+  counter.textContent = "01 / 08";
+  progress.style.width = "12.5%";
+  makeHearts(12);
+}
+
+// Create stars
+const starContainer = document.getElementById("stars");
+
+for (let i = 0; i < 90; i++) {
+  const star = document.createElement("span");
+  star.className = "star";
+  star.style.left = Math.random() * 100 + "%";
+  star.style.top = Math.random() * 100 + "%";
+  star.style.animationDelay = Math.random() * 3 + "s";
+  star.style.animationDuration = (1 + Math.random() * 3) + "s";
+  starContainer.appendChild(star);
+}
+
+// Create floating hearts
+function makeHearts(amount = 1) {
+  const container = document.getElementById("hearts");
+
+  for (let i = 0; i < amount; i++) {
+    const heart = document.createElement("span");
+    heart.className = "heart";
+    heart.textContent = ["♥", "♡", "❤", "✦"][
+      Math.floor(Math.random() * 4)
+    ];
+
+    heart.style.left = Math.random() * 100 + "%";
+    heart.style.fontSize = (15 + Math.random() * 22) + "px";
+    heart.style.animationDuration = (4 + Math.random() * 4) + "s";
+
+    container.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 8500);
+  }
+}
+
+// Continuous background animation
+setInterval(() => makeHearts(1), 650);
+</script>
+
+</body>
+</html>
